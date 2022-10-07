@@ -1,7 +1,7 @@
 console.log("Cargando - Console.log");
 
 // ENDPOINT con QUERY PARAM.
-const API_URL = "https://api.thecatapi.com/v1/images/search?limit=3api_key="
+const API_URL = "https://api.thecatapi.com/v1/images/search?limit=3";
 
 
 async function reload(){
