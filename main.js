@@ -1,7 +1,7 @@
 // ENDPOINT con QUERY PARAM.
 const API_URL_RANDOM = "https://api.thecatapi.com/v1/images/search?limit=2";
-const API_URL_FAVOURITES = "https://api.thecatapi.com/v1/favourites?api_key=live_XxJk9btOENRbvt13t6onIYMHUviZN2H6F9eu1DzZkzfZnHDMnP8Pdda4fUvXyleN";
-const API_URL_DELETE_FAVOURITES = (id) => `https://api.thecatapi.com/v1/favourites/${id}?api_key=live_XxJk9btOENRbvt13t6onIYMHUviZN2H6F9eu1DzZkzfZnHDMnP8Pdda4fUvXyleN`;
+const API_URL_FAVOURITES = "https://api.thecatapi.com/v1/favourites?api_key=";
+const API_URL_DELETE_FAVOURITES = (id) => `https://api.thecatapi.com/v1/favourites/${id}?api_key=`;
 
 const spanError = document.getElementById("error");
 
@@ -37,7 +37,12 @@ async function loadRandomCats(){
 // Favorites en HTML
 async function loadFavouritesCats(){
   // Llamada a la API
-  const res = await fetch(API_URL_FAVOURITES);
+  const res = await fetch(API_URL_FAVOURITES, {
+    method: "GET",
+    headers: {
+      "X-API-KEY": "live_XxJk9btOENRbvt13t6onIYMHUviZN2H6F9eu1DzZkzfZnHDMnP8Pdda4fUvXyleN" ,
+    }
+  });
   // Pasamos respuesta a JSON
   const data = await res.json();
 
@@ -84,7 +89,8 @@ async function saveFavouritesCat(id){
   const res = await fetch(API_URL_FAVOURITES, {
     method: "POST",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
+      "X-API-KEY": "live_XxJk9btOENRbvt13t6onIYMHUviZN2H6F9eu1DzZkzfZnHDMnP8Pdda4fUvXyleN"
     },
     body: JSON.stringify({
       image_id: id
@@ -109,7 +115,10 @@ async function deleteFavouriteCat(id){
   // No existe "headers" ni "body" porque el único parámetro que
   // enviamos es "id" y este va en el query parameter(URL)
   const res = await fetch(API_URL_DELETE_FAVOURITES(id), {
-    method: "DELETE"
+    method: "DELETE",
+    headers: {
+      "X-API-KEY": "live_XxJk9btOENRbvt13t6onIYMHUviZN2H6F9eu1DzZkzfZnHDMnP8Pdda4fUvXyleN"
+    }
   });
   
   const data = await res.json();
