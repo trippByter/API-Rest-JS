@@ -1,6 +1,7 @@
 // ENDPOINT con QUERY PARAM.
 const API_URL_RANDOM = "https://api.thecatapi.com/v1/images/search?limit=2";
 const API_URL_FAVOURITES = "https://api.thecatapi.com/v1/favourites?api_key=live_XxJk9btOENRbvt13t6onIYMHUviZN2H6F9eu1DzZkzfZnHDMnP8Pdda4fUvXyleN";
+const API_URL_DELETE_FAVOURITES = (id) => `https://api.thecatapi.com/v1/favourites/${id}?api_key=live_XxJk9btOENRbvt13t6onIYMHUviZN2H6F9eu1DzZkzfZnHDMnP8Pdda4fUvXyleN`;
 
 const spanError = document.getElementById("error");
 
@@ -47,10 +48,16 @@ async function loadFavouritesCats(){
   if(res.status !== 200){
     spanError.innerHTML = "Hubo un error: " + res.status + data.message;
   } else {
+    // Elemento HTML que contiene "REGALONES"
+    const section = document.getElementById("favouritesMichis");
+    section.innerHTML = "";
+    const h2 = document.createElement("h2");
+    const h2Text = document.createTextNode("Regaloni");
+    h2.appendChild(h2Text);
+    section.appendChild(h2);
     // Obtenemos imagen del array de "favoritos"
     data.forEach(cat => {
       // Generamos etiquetas HTML
-      const section = document.getElementById("favouritesMichis");
       const article = document.createElement("article");
       const img = document.createElement("img");
       const btn = document.createElement("button");
@@ -60,6 +67,7 @@ async function loadFavouritesCats(){
       img.src = cat.image.url;
       img.width = 150;
       btn.appendChild(btnText);
+      btn.onclick = () => deleteFavouriteCat(cat.id);
       article.appendChild(img);
       article.appendChild(btn);
       section.appendChild(article);
@@ -89,6 +97,30 @@ async function saveFavouritesCat(id){
 
   if(res.status !== 200){
     spanError.innerHTML = "Hubo un error: " + res.status;
+  }else{
+    console.log("Gato guardado en favoritos.")
+    loadFavouritesCats();
+  }
+
+};
+
+// Borrar elementos de favoritos
+async function deleteFavouriteCat(id){
+  // No existe "headers" ni "body" porque el único parámetro que
+  // enviamos es "id" y este va en el query parameter(URL)
+  const res = await fetch(API_URL_DELETE_FAVOURITES(id), {
+    method: "DELETE"
+  });
+  
+  const data = await res.json();
+  // console.log(res);
+  console.log(data);
+
+  if(res.status !== 200){
+    spanError.innerHTML = "Hubo un error: " + res.status;
+  }else{
+    console.log("Gato eliminado de favoritos.")
+    loadFavouritesCats();
   }
 };
 
