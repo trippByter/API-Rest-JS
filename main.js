@@ -5,7 +5,7 @@ const API_URL_FAVOURITES = "https://api.thecatapi.com/v1/favourites?api_key=live
 const spanError = document.getElementById("error");
 
 async function loadRandomCats(){
-  // Llamada a la API
+  // Llamada a la API con "fetch"
   const res = await fetch(API_URL_RANDOM);
   // Pasamos respuesta a JSON
   const data = await res.json();
@@ -16,9 +16,16 @@ async function loadRandomCats(){
     // Manipulación DOM
     const img00 = document.getElementById("img00");
     const img01 = document.getElementById("img01");
-    // Cambiamos el atributo "src"
+    const btn00 = document.getElementById("btn-img00");
+    const btn01 = document.getElementById("btn-img01");
+    
     img00.src = data[0].url;
     img01.src = data[1].url;
+
+    // Asegurar las funciones con "arrows functions",
+    // para evitar que se ejecuten sin ser invocadas.
+    btn00.onclick = () => saveFavouritesCat(data[0].id);
+    btn01.onclick = () => saveFavouritesCat(data[1].id);
   }
 
   console.log("_=_=_=_=_RANDOM_=_=_=_=_");
@@ -39,6 +46,24 @@ async function loadFavouritesCats(){
 
   if(res.status !== 200){
     spanError.innerHTML = "Hubo un error: " + res.status + data.message;
+  } else {
+    // Obtenemos imagen del array de "favoritos"
+    data.forEach(cat => {
+      // Generamos etiquetas HTML
+      const section = document.getElementById("favouritesMichis");
+      const article = document.createElement("article");
+      const img = document.createElement("img");
+      const btn = document.createElement("button");
+      const btnText = document.createTextNode("Sacar de favoritos");
+      
+      // Devolvemos etiquetas HTML
+      img.src = cat.image.url;
+      img.width = 150;
+      btn.appendChild(btnText);
+      article.appendChild(img);
+      article.appendChild(btn);
+      section.appendChild(article);
+    });
   };
 }
 
@@ -46,15 +71,15 @@ async function loadFavouritesCats(){
 // "favoritos", hay que usar método POST
 // body: JSON("image_id") - Mandamos un str
 // porque no sabemos en que lenguaje está escrito
-// backend. 
-async function saveFavouritesCats(){
+// backend.
+async function saveFavouritesCat(id){
   const res = await fetch(API_URL_FAVOURITES, {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
     },
     body: JSON.stringify({
-      image_id: "2ke"
+      image_id: id
     })
   });
   
@@ -66,7 +91,6 @@ async function saveFavouritesCats(){
     spanError.innerHTML = "Hubo un error: " + res.status;
   }
 };
-
 
 loadRandomCats();
 loadFavouritesCats();
